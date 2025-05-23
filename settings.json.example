@@ -1,0 +1,11 @@
+{
+    "site": "en.wikipedia.org",
+    "path": "/w/",
+    "user": "BotUser@PasswordName",
+    "bot_password": "",
+    "ua": "KevinClerkBot‑t2/0.1 (+https://github.com/L235/WordcountClerkBot)",
+    "cookie_path": "~/kevinclerkbot/cookies.txt",
+    "proceedings_page": "User:KevinClerkBot/Ongoing proceedings",
+    "target_page": "User:KevinClerkBot/ArbCom activity",
+    "run_interval": 600
+} 
