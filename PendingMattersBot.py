@@ -237,8 +237,8 @@ def run_once(site):
     data  =assemble_data(site, arbs)
     tp=site.pages[str(CFG["target_page"])]
     dp=site.pages[str(CFG["data_page"])]
-    if report!=tp.text(): tp.save(report,summary="update activity report (task 2)",minor=False,bot=False)
-    if data!=dp.text():  dp.save(data,  summary="update data template (task 2)",minor=True, bot=False)
+    if report!=tp.text(): tp.save(report,summary="update activity report ([[User:KevinClerkBot#t2|task 2]], [[WP:EXEMPTBOT|exempt]])",minor=False,bot=False)
+    if data!=dp.text():  dp.save(data,  summary="update data template ([[User:KevinClerkBot#t2|task 2]], [[WP:EXEMPTBOT|exempt]])",minor=True, bot=False)
 
 def main(loop=True):
     load_settings()
