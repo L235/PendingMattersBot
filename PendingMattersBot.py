@@ -31,10 +31,10 @@ CFG: Dict[str, object] = {
     "USER": os.getenv("USER", "BotUser@PasswordName"),
     "BOT_PASSWORD": os.getenv("BOT_PASSWORD", ""),
     "UA": os.getenv("UA", "KevinClerkBot‑t2/0.4 (+https://github.com/L235/WordcountClerkBot)"),
-    "COOKIE_PATH": os.getenv("COOKIE_PATH", "~/kevinclerkbot/cookies.txt"),
-    "PROCEEDINGS_PAGE": os.getenv("PROCEEDINGS_PAGE", "User:KevinClerkBot/Ongoing proceedings"),
-    "TARGET_PAGE": os.getenv("TARGET_PAGE", "User:KevinClerkBot/ArbCom activity"),
-    "DATA_PAGE": os.getenv("DATA_PAGE", "User:KevinClerkBot/ArbCom activity/data"),
+    "COOKIE_PATH": os.getenv("COOKIE_PATH", "./cookies.txt"),
+    "PROCEEDINGS_PAGE": os.getenv("PROCEEDINGS_PAGE", "User:ClerkBot/Ongoing proceedings"),
+    "TARGET_PAGE": os.getenv("TARGET_PAGE", "User:ClerkBot/ArbCom activity"),
+    "DATA_PAGE": os.getenv("DATA_PAGE", "User:ClerkBot/ArbCom activity/data"),
     "RUN_INTERVAL": int(os.getenv("RUN_INTERVAL", "600")),
 }
 
