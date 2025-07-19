@@ -24,20 +24,19 @@ import mwclient
 import mwparserfromhell as mwpfh
 import requests
 
-SETTINGS_PATH = "settings.json"
-DEFAULT_CFG = {
-    "site": "en.wikipedia.org",
-    "path": "/w/",
-    "user": "BotUser@PasswordName",
-    "bot_password": "",
-    "ua": "KevinClerkBot‑t2/0.4 (+https://github.com/L235/WordcountClerkBot)",
-    "cookie_path": "~/kevinclerkbot/cookies.txt",
-    "proceedings_page": "User:KevinClerkBot/Ongoing proceedings",
-    "target_page": "User:KevinClerkBot/ArbCom activity",
-    "data_page": "User:KevinClerkBot/ArbCom activity/data",
-    "run_interval": 600,
+SETTINGS_PATH = os.getenv("SETTINGS_PATH", "settings.json")
+CFG: Dict[str, object] = {
+    "SITE": os.getenv("SITE", "en.wikipedia.org"),
+    "PATH": os.getenv("PATH", "/w/"),
+    "USER": os.getenv("USER", "BotUser@PasswordName"),
+    "BOT_PASSWORD": os.getenv("BOT_PASSWORD", ""),
+    "UA": os.getenv("UA", "KevinClerkBot‑t2/0.4 (+https://github.com/L235/WordcountClerkBot)"),
+    "COOKIE_PATH": os.getenv("COOKIE_PATH", "~/kevinclerkbot/cookies.txt"),
+    "PROCEEDINGS_PAGE": os.getenv("PROCEEDINGS_PAGE", "User:KevinClerkBot/Ongoing proceedings"),
+    "TARGET_PAGE": os.getenv("TARGET_PAGE", "User:KevinClerkBot/ArbCom activity"),
+    "DATA_PAGE": os.getenv("DATA_PAGE", "User:KevinClerkBot/ArbCom activity/data"),
+    "RUN_INTERVAL": int(os.getenv("RUN_INTERVAL", "600")),
 }
-CFG: Dict[str, object] = DEFAULT_CFG.copy()
 
 # logging
 class _Max(logging.Filter):
@@ -83,11 +82,11 @@ class CommentStats:
 ###############################################################################
 # Utility wrappers
 ###############################################################################
-load_settings = lambda p=SETTINGS_PATH: (CFG.update(DEFAULT_CFG), CFG.update(json.load(open(p))) if os.path.exists(p) else None)
+load_settings = lambda p=SETTINGS_PATH: CFG.update(json.load(open(p))) if os.path.exists(p) else None
 
 def connect():
-    s = requests.Session(); site = mwclient.Site(str(CFG["site"]), path=str(CFG["path"]), clients_useragent=str(CFG["ua"]), pool=s)
-    if not site.logged_in: site.login(str(CFG["user"]), str(CFG["bot_password"]))
+    s = requests.Session(); site = mwclient.Site(str(CFG["SITE"]), path=str(CFG["PATH"]), clients_useragent=str(CFG["UA"]), pool=s)
+    if not site.logged_in: site.login(str(CFG["USER"]), str(CFG["BOT_PASSWORD"]))
     return site
 
 fetch = lambda site, title: site.pages[title].text()
@@ -135,7 +134,7 @@ def get_arbs(site) -> Dict[str, Arb]:
 
 def get_procs(site):
     procs: List[Proceeding] = []
-    for wl in mwpfh.parse(fetch(site, CFG["proceedings_page"])).filter_wikilinks():
+    for wl in mwpfh.parse(fetch(site, CFG["PROCEEDINGS_PAGE"])).filter_wikilinks():
         tgt = str(wl.title);  lbl = wl.text.strip() if wl.text else tgt.split("#",1)[1]
         if "#" not in tgt: continue
         page, anc = tgt.split("#",1)
@@ -235,8 +234,8 @@ def run_once(site):
     arbs=get_arbs(site)
     report=assemble_report(site, arbs)
     data  =assemble_data(site, arbs)
-    tp=site.pages[str(CFG["target_page"])]
-    dp=site.pages[str(CFG["data_page"])]
+    tp=site.pages[str(CFG["TARGET_PAGE"])]
+    dp=site.pages[str(CFG["DATA_PAGE"])]
     if report!=tp.text(): tp.save(report,summary="update activity report ([[User:KevinClerkBot#t2|task 2]], [[WP:EXEMPTBOT|exempt]])",minor=False,bot=False)
     if data!=dp.text():  dp.save(data,  summary="update data template ([[User:KevinClerkBot#t2|task 2]], [[WP:EXEMPTBOT|exempt]])",minor=True, bot=False)
 
@@ -247,7 +246,7 @@ def main(loop=True):
     while True:
         try: run_once(site)
         except Exception: a.exception("error in cycle")
-        time.sleep(int(CFG["run_interval"]))
+        time.sleep(int(CFG["RUN_INTERVAL"]))
 
 if __name__=="__main__":
     main(loop=not any(arg in {"--once","-1"} for arg in sys.argv))
